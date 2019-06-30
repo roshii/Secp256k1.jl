@@ -5,7 +5,7 @@ Elliptic Curve Cryptography for Julia.
 ## Types
 
 ```@docs
-S256Point
+Point
 PrivateKey
 Signature
 ```

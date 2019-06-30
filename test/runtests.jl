@@ -1,6 +1,6 @@
 using secp256k1, Test
 
-tests = ["helper", "primefield", "infinity", "point", "secp256k1"]
+tests = ["helper", "FieldElement", "Infinity", "Point", "ecdsa"]
 
 for t ∈ tests
   include("$(t)_tests.jl")
