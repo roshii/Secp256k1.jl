@@ -1,7 +1,7 @@
 const A = 𝐹(0)
 const B = 𝐹(7)
 
-iselliptic(𝑥::FieldElement,𝑦::FieldElement) = 𝑦^2 == 𝑥^3 + A*𝑥 + B
+oncurve(𝑥::FieldElement,𝑦::FieldElement) = 𝑦^2 == 𝑥^3 + A*𝑥 + B
 
 xField = Union{FieldElement, Infinity}
 
@@ -17,8 +17,8 @@ struct Point{T<:xField}
 end
 
 Point(::Infinity,::Infinity) = Point{Infinity}(∞,∞)
-Point(𝑥::FieldElement,𝑦::FieldElement) = !iselliptic(𝑥,𝑦) ? throw(NotOnCurve()) : Point{FieldElement}(𝑥,𝑦)
-Point(𝑥::Integer,𝑦::Integer) = !iselliptic(𝐹(𝑥),𝐹(𝑦)) ? throw(NotOnCurve()) : Point{FieldElement}(𝐹(𝑥),𝐹(𝑦))
+Point(𝑥::FieldElement,𝑦::FieldElement) = !oncurve(𝑥,𝑦) ? throw(NotOnCurve()) : Point{FieldElement}(𝑥,𝑦)
+Point(𝑥::Integer,𝑦::Integer) = !oncurve(𝐹(𝑥),𝐹(𝑦)) ? throw(NotOnCurve()) : Point{FieldElement}(𝐹(𝑥),𝐹(𝑦))
 
 "Formats Point{FieldElement} as `(𝑥, 𝑦)` in hexadecimal format"
 function show(io::IO, z::Point{FieldElement})
