@@ -1,6 +1,6 @@
 # secp256k1.jl
 
-Elliptic Curve Cryptography for Julia.
+Julia library for EC operations on curve secp256k1.
 
 ## Types
 
