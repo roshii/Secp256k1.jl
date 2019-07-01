@@ -20,6 +20,9 @@ Point(::Infinity,::Infinity) = Point{Infinity}(∞,∞)
 Point(𝑥::FieldElement,𝑦::FieldElement) = !oncurve(𝑥,𝑦) ? throw(NotOnCurve()) : Point{FieldElement}(𝑥,𝑦)
 Point(𝑥::Integer,𝑦::Integer) = !oncurve(𝐹(𝑥),𝐹(𝑦)) ? throw(NotOnCurve()) : Point{FieldElement}(𝐹(𝑥),𝐹(𝑦))
 
+const G = Point(big"0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+                big"0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8")
+
 "Formats Point{FieldElement} as `(𝑥, 𝑦)` in hexadecimal format"
 function show(io::IO, z::Point{FieldElement})
     x, y = z.𝑥.𝑛, z.𝑦.𝑛
@@ -74,11 +77,11 @@ function *(λ::Integer,𝑃::Point)
 end
 
 """
-    point2sec(P::Point; compressed::Bool) -> Vector{UInt8}
+    serialize(P::Point; compressed::Bool) -> Vector{UInt8}
 
 Serialize an Point() to its SEC format. `compressed=true` by default.
 """
-function point2sec(P::Point; compressed::Bool=true)
+function serialize(P::Point; compressed::Bool=true)
     xbin = int2bytes(P.𝑥.𝑛)
     if length(xbin) < 32
         prepend!(xbin, UInt8.(zeros(32 - length(xbin))))
@@ -101,11 +104,11 @@ function point2sec(P::Point; compressed::Bool=true)
 end
 
 """
-    sec2point(sec_bin::Vector{UInt8}) -> Point
+    parse(sec_bin::Vector{UInt8}) -> Point
 
 Parse a SEC binary to an Point()
 """
-function sec2point(sec_bin::Vector{UInt8})
+function ec_parse(sec_bin::Vector{UInt8})
     if sec_bin[1] == 4
         𝑥 = bytes2int(sec_bin[2:33])
         𝑦 = bytes2int(sec_bin[34:65])

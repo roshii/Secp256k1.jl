@@ -1,10 +1,12 @@
 const P = big(2)^256 - 2^32 - 977
 const N = big"0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141"
 
+infield(x::Integer) = x >= 0 && x < P
+
 "`FieldElement` represents an element in 𝐹ₚ where `P = 2²⁵⁶ - 2³² - 977`"
 struct FieldElement <: Number
      𝑛::BigInt
-     FieldElement(𝑛) = 𝑛 < 0 || 𝑛 >= P ? throw(NotInField()) : new(𝑛)
+     FieldElement(𝑛) = !infield(𝑛) ? throw(NotInField()) : new(𝑛)
 end
 
 FieldElement(x::FieldElement) = x

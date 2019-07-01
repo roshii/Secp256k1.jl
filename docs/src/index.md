@@ -5,20 +5,20 @@ Julia library for EC operations on curve secp256k1.
 ## Types
 
 ```@docs
-Point
-PrivateKey
-Signature
+secp256k1.Point
+secp256k1.ECDSA.KeyPair
+secp256k1.ECDSA.Signature
 ```
 
 ## Functions
 
 ```@docs
-point2sec
-sec2point
-verify
-pksign
-sig2der
-der2sig
+secp256k1.serialize
+secp256k1.ec_parse
+secp256k1.ECDSA.sign
+secp256k1.ECDSA.verify
+secp256k1.ECDSA.serialize
+secp256k1.ECDSA.parse
 ```
 
 ## Helpers

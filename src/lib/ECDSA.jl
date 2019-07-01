@@ -1,25 +1,29 @@
-const G = Point(big"0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
-                big"0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8")
+module ECDSA
+
+import Base.==
+import secp256k1: Point, N, G
+import secp256k1: bytes2int, int2bytes
 
 """
-PrivateKey(𝑒) represents a Point 𝑃 determined by 𝑃 = 𝑒G,
-where 𝑒 is an integer and G the scep256k1 generator point.
+KeyPair(𝑑) represents a Point 𝑃 determined by 𝑃 = 𝑑G,
+where 𝑑 is an integer and G the scep256k1 generator point.
 """
-struct PrivateKey
-    𝑒::Integer
-    𝑃::Point
-    PrivateKey(𝑒) = new(𝑒, 𝑒 * G)
+struct KeyPair
+    𝑑::Integer
+    𝑄::Point
+    KeyPair(𝑑) = 𝑑 ∉ 1:N-1 ? throw(NotInField()) : new(𝑑, 𝑑 * G)
 end
 
 """
-Returns a Signature for a given PrivateKey and data 𝑧
-    pksign(pk::PrivateKey, 𝑧::Integer) -> Signature
+    ECDSA.sign(kp::KeyPair, 𝑧::Integer) -> Signature
+
+Returns a Signature for a given `KeyPair` and data `𝑧`
 """
-function pksign(pk::PrivateKey, 𝑧::Integer)
+function sign(kp::KeyPair, 𝑧::Integer)
     𝑘 = rand(big.(0:N))
     𝑟 = (𝑘 * G).𝑥.𝑛
     𝑘⁻¹ = powermod(𝑘, N - 2, N)
-    𝑠 = mod((𝑧 + 𝑟 * pk.𝑒) * 𝑘⁻¹, N)
+    𝑠 = mod((𝑧 + 𝑟 * kp.𝑑) * 𝑘⁻¹, N)
     if 𝑠 > N / 2
         𝑠 = N - 𝑠
     end
@@ -28,7 +32,7 @@ end
 
 """
 Signature(𝑟, 𝑠) represents a Signature for 𝑧 in which
-`𝑠 = (𝑧 + 𝑟𝑒) / 𝑘`, 𝑘 being a random integer.
+`𝑠 = (𝑧 + 𝑟𝑑) / 𝑘`, 𝑘 being a random integer.
 """
 struct Signature
     𝑟::BigInt
@@ -44,11 +48,25 @@ end
 ==(x::Signature, y::Signature) = x.𝑟 == y.𝑟 && x.𝑠 == y.𝑠
 
 """
-    sig2der(x::Signature) -> Vector{UInt8}
+    verify(𝑃::Point, 𝑧::Integer, sig::Signature) -> Bool
+
+Returns true if Signature is valid for 𝑧 given 𝑃, false if not
+"""
+function verify(𝑄::Point, 𝑧::Integer, sig::Signature)
+    𝑠⁻¹ = powermod(sig.𝑠, N - 2, N)
+    𝑢 = mod(𝑧 * 𝑠⁻¹, N)
+    𝑣 = mod(sig.𝑟 * 𝑠⁻¹, N)
+    𝑅 = 𝑢 * G + 𝑣 * 𝑄
+    return 𝑅.𝑥.𝑛 == sig.𝑟
+end
+
+
+"""
+    serialize(x::Signature) -> Vector{UInt8}
 
 Serialize a Signature to DER format
 """
-function sig2der(x::Signature)
+function serialize(x::Signature)
     rbin = int2bytes(x.𝑟)
     # if rbin has a high bit, add a 00
     if rbin[1] >= 128
@@ -72,11 +90,11 @@ function sig2der(x::Signature)
 end
 
 """
-    der2sig(signature_bin::Vector{UInt8}) -> Signature
+    parse(x::Vector{UInt8}) -> Signature
 
 Parse a DER binary to a Signature
 """
-function der2sig(x::Vector{UInt8})
+function parse(x::Vector{UInt8})
     io = IOBuffer(x)
     prefix = read(io, 1)[1]
     if prefix != 0x30
@@ -104,15 +122,4 @@ function der2sig(x::Vector{UInt8})
     return Signature(r, s)
 end
 
-"""
-    verify(𝑃::Point, 𝑧::Integer, sig::Signature) -> Bool
-
-Returns true if Signature is valid for 𝑧 given 𝑃, false if not
-"""
-function verify(𝑃::Point, 𝑧::Integer, sig::Signature)
-    𝑠⁻¹ = powermod(sig.𝑠, N - 2, N)
-    𝑢 = mod(𝑧 * 𝑠⁻¹, N)
-    𝑣 = mod(sig.𝑟 * 𝑠⁻¹, N)
-    𝑅 = 𝑢 * G + 𝑣 * 𝑃
-    return 𝑅.𝑥.𝑛 == sig.𝑟
-end
+end  # module ECDSA
