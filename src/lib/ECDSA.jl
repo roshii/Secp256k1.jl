@@ -1,16 +1,15 @@
 module ECDSA
 
 using BitConverter
-using secp256k1: Point, KeyPair, N, G
-import Base.==
+using secp256k1: Point, KeyPair, Signature, N, G
 export KeyPair
 
 KeyPair{:ECDSA}(𝑑) = 𝑑 ∉ 1:N-1 ? throw(NotInField()) : KeyPair{:ECDSA}(𝑑, 𝑑 * G)
 
 """
-    ECDSA.sign(kp::KeyPair{:ECDSA}, 𝑧::Integer) -> Signature
+    ECDSA.sign(kp::KeyPair{:ECDSA}, 𝑧::Integer) -> Signature{:ECDSA}
 
-Returns a Signature for a given `KeyPair` and data `𝑧`
+Returns a Signature{:ECDSA} for a given `KeyPair` and data `𝑧`
 """
 function sign(kp::KeyPair{:ECDSA}, 𝑧::Integer)
     𝑘 = rand(big.(0:N))
@@ -20,32 +19,15 @@ function sign(kp::KeyPair{:ECDSA}, 𝑧::Integer)
     if 𝑠 > N / 2
         𝑠 = N - 𝑠
     end
-    return Signature(𝑟, 𝑠)
+    return Signature{:ECDSA}(𝑟, 𝑠)
 end
 
 """
-Signature(𝑟, 𝑠) represents a Signature for 𝑧 in which
-`𝑠 = (𝑧 + 𝑟𝑑) / 𝑘`, 𝑘 being a random integer.
+    verify(𝑄::Point, 𝑧::Integer, sig::Signature{:ECDSA}) -> Bool
+
+Returns true if Signature{:ECDSA} is valid for 𝑧 given 𝑄, false if not
 """
-struct Signature
-    𝑟::BigInt
-    𝑠::BigInt
-    Signature(𝑟, 𝑠) = new(𝑟, 𝑠)
-end
-
-"Formats Signature as (r, s) in hexadecimal format"
-function show(io::IO, z::Signature)
-    print(io, "scep256k1 signature(𝑟, 𝑠):\n", string(z.𝑟, base = 16), ",\n", string(z.𝑠, base = 16))
-end
-
-==(x::Signature, y::Signature) = x.𝑟 == y.𝑟 && x.𝑠 == y.𝑠
-
-"""
-    verify(𝑃::Point, 𝑧::Integer, sig::Signature) -> Bool
-
-Returns true if Signature is valid for 𝑧 given 𝑃, false if not
-"""
-function verify(𝑄::Point, 𝑧::Integer, sig::Signature)
+function verify(𝑄::Point, 𝑧::Integer, sig::Signature{:ECDSA})
     𝑠⁻¹ = powermod(sig.𝑠, N - 2, N)
     𝑢 = mod(𝑧 * 𝑠⁻¹, N)
     𝑣 = mod(sig.𝑟 * 𝑠⁻¹, N)
@@ -55,11 +37,11 @@ end
 
 
 """
-    serialize(x::Signature) -> Vector{UInt8}
+    serialize(x::Signature{:ECDSA}) -> Vector{UInt8}
 
-Serialize a Signature to DER format
+Serialize a Signature{:ECDSA} to DER format
 """
-function serialize(x::Signature)
+function serialize(x::Signature{:ECDSA})
     rbin = bytes(x.𝑟)
     # if rbin has a high bit, add a 00
     if rbin[1] >= 128
@@ -83,9 +65,9 @@ function serialize(x::Signature)
 end
 
 """
-    parse(x::Vector{UInt8}) -> Signature
+    parse(x::Vector{UInt8}) -> Signature{:ECDSA}
 
-Parse a DER binary to a Signature
+Parse a DER binary to a Signature{:ECDSA}
 """
 function parse(x::Vector{UInt8})
     io = IOBuffer(x)
@@ -112,7 +94,7 @@ function parse(x::Vector{UInt8})
     if length(x) != 6 + rlength + slength
         throw(LengthError())
     end
-    return Signature(r, s)
+    return Signature{:ECDSA}(r, s)
 end
 
 end  # module ECDSA

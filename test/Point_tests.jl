@@ -56,7 +56,7 @@
         @test point.𝑦.𝑛 == want
         sec_bin = hex2bytes("049d5ca49670cbe4c3bfa84c96a8c87df086c6ea6a24ba6b809c9de234496808d56fa15cc7f3d38cda98dee2419f415b7513dde1301f8643cd9245aea7f3f911f9")
         point = secp256k1.ec_parse(sec_bin)
-        want = parse(BigInt, "6fa15cc7f3d38cda98dee2419f415b7513dde1301f8643cd9245aea7f3f911f9", base=16)
+        want = big"0x6fa15cc7f3d38cda98dee2419f415b7513dde1301f8643cd9245aea7f3f911f9"
         @test point.𝑦.𝑛 == want
     end
 
