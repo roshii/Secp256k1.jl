@@ -1,5 +1,5 @@
 @testset "FieldElement Operations" begin
-    import secp256k1: 𝐹, P
+    import Secp256k1: 𝐹, P
     @testset "Addition" begin
         @test 𝐹(2)   + 𝐹(15) == 𝐹(17)
         @test 𝐹(P-1) + 𝐹(2)  == 𝐹(1)

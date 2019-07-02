@@ -1,6 +1,6 @@
 @testset "ECDSA" begin
 
-    import secp256k1: Point, G, N
+    import Secp256k1: Point, G, N
 
     @testset "Signature Verification" begin
         kp = KeyPair{:ECDSA}(rand(big.(1:N-1)))

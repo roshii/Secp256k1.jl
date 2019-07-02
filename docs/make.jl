@@ -1,4 +1,4 @@
-using Documenter, secp256k1
+using Documenter, Secp256k1
 
-makedocs(sitename="secp256k1",
+makedocs(sitename="Secp256k1",
          doctest=true)

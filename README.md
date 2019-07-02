@@ -1,4 +1,4 @@
-# secp256k1.jl
+# Secp256k1.jl
 
 Julia library for EC operations on curve secp256k1.
 

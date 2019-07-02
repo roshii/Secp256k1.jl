@@ -1,15 +1,16 @@
 module ECDSA
 
 using BitConverter
-using secp256k1: Point, KeyPair, Signature, N, G
+using Secp256k1: Point, KeyPair, Signature, N, G
 export KeyPair
 
-KeyPair{:ECDSA}(𝑑) = 𝑑 ∉ 1:N-1 ? throw(NotInField()) : KeyPair{:ECDSA}(𝑑, 𝑑 * G)
+KeyPair{:ECDSA}(𝑑::Integer) = 𝑑 ∉ 1:N-1 ? throw(NotInField()) : KeyPair{:ECDSA}(𝑑, 𝑑 * G)
 
 """
     ECDSA.sign(kp::KeyPair{:ECDSA}, 𝑧::Integer) -> Signature{:ECDSA}
 
-Returns a Signature{:ECDSA} for a given `KeyPair` and data `𝑧`
+Returns a Signature{:ECDSA} for a given `KeyPair{:ECDSA}` and data `𝑧` and in
+which 𝑠 = (𝑧 + 𝑟𝑑) / 𝑘, 𝑘 being a random integer.
 """
 function sign(kp::KeyPair{:ECDSA}, 𝑧::Integer)
     𝑘 = rand(big.(0:N))

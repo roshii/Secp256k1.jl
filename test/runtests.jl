@@ -1,4 +1,4 @@
-using secp256k1, Test
+using Secp256k1, Test
 
 tests = ["FieldElement", "Infinity", "Point", "scheme-types", "ECDSA"]
 

@@ -1,6 +1,6 @@
 __precompile__()
 
-module secp256k1
+module Secp256k1
 
 using BitConverter
 import Base: +, -, *, ^, /, ==, inv, sqrt, show, div
