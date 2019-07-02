@@ -1,15 +1,22 @@
 """
-KeyPair(𝑑) represents a Point 𝑃 determined by 𝑃 = 𝑑G,
-where 𝑑 is an integer and G the scep256k1 generator point.
+`KeyPair{T}(𝑑::BigInt, 𝑄::Point)` represents a private-public key pair in which
+- `𝑑` is the secret key
+- `𝑄` the public key
+= `T` represents key pair scheme
+
+`KeyPair{:ECDSA}(𝑑::Integer)` instantiate a `KeyPair` such as 𝑄 = 𝑑𝐺 and where
+- {𝑑 ∈ ℤ | 𝑑 < 𝑛}
+- 𝐺 is the secp256k1 base point.
+- 𝑛 is the order of 𝐺
 """
 struct KeyPair{T}
-    𝑑::Integer
+    𝑑::BigInt
     𝑄::Point
 end
 
 """
-Signature(𝑟, 𝑠) represents a Signature for 𝑧 in which
-`𝑠 = (𝑧 + 𝑟𝑑) / 𝑘`, 𝑘 being a random integer.
+Signature{T}(𝑟::BigInt, 𝑠::BigInt) represents a following scheme `T`
+- `T` can be set to `:ECDSA`
 """
 struct Signature{T}
     𝑟::BigInt
@@ -27,7 +34,7 @@ end
 """
     serialize(x::Signature) -> Vector{UInt8}
 
-Serialize a Signature to DER format
+Serialize a `Signature` to DER format
 """
 function serialize(x::Signature)
     rbin = bytes(x.𝑟)
@@ -53,10 +60,10 @@ function serialize(x::Signature)
 end
 
 """
-    to_signature(x::Vector{UInt8}; scheme::Symbol) -> Signature
+    Signature(x::Vector{UInt8}; scheme::Symbol) -> Signature
 
-Parse a DER binary to a Signature{scheme}.
-`scheme` is optional and set to `:ECDSA` by default.
+Parse a DER binary to a `Signature{scheme}`
+- `scheme` is optional and set to `:ECDSA` by default.
 """
 function Signature(x::Vector{UInt8}; scheme::Symbol=:ECDSA)
     io = IOBuffer(x)

@@ -8,8 +8,8 @@ xField = Union{FieldElement, Infinity}
 """
     Point{T<:xField}
 
-Point{T<:xField}(𝑥::T, 𝑦::T) represents a point in an scep256k1 field.
-xField is equal to Union{FieldElement, Infinity}
+`Point{T<:xField}(𝑥::T, 𝑦::T)` represents a point in an scep256k1 field.
+`xField` is equal to `Union{FieldElement, Infinity}`
 """
 struct Point{T<:xField}
     𝑥::T
@@ -79,7 +79,8 @@ end
 """
     serialize(P::Point; compressed::Bool) -> Vector{UInt8}
 
-Serialize an Point() to its SEC format. `compressed=true` by default.
+Serialize a `Point` to its SEC format
+- `compressed=true` by default
 """
 function serialize(P::Point; compressed::Bool=true)
     xbin = bytes(P.𝑥.𝑛)
@@ -106,9 +107,8 @@ end
 """
     Point(io::IOBuffer) -> Point
 
-Parse a SEC binary to an Point()
+Parse a SEC binary to an `Point`
 """
-
 function Point(io::IOBuffer)
     prefix = read(io, 1)[1]
     if prefix == 4
