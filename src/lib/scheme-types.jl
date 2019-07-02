@@ -53,12 +53,12 @@ function serialize(x::Signature)
 end
 
 """
-    parse(x::Vector{UInt8}; scheme::Symbol) -> Signature
+    to_signature(x::Vector{UInt8}; scheme::Symbol) -> Signature
 
 Parse a DER binary to a Signature{scheme}.
 `scheme` is optional and set to `:ECDSA` by default.
 """
-function parse(x::Vector{UInt8}; scheme::Symbol=:ECDSA)
+function Signature(x::Vector{UInt8}; scheme::Symbol=:ECDSA)
     io = IOBuffer(x)
     prefix = read(io, 1)[1]
     if prefix != 0x30

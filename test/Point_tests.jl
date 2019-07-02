@@ -51,11 +51,11 @@
 
     @testset "Parse" begin
         sec_bin = hex2bytes("0349fc4e631e3624a545de3f89f5d8684c7b8138bd94bdd531d2e213bf016b278a")
-        point = secp256k1.ec_parse(sec_bin)
+        point = secp256k1.Point(sec_bin)
         want = big"0xa56c896489c71dfc65701ce25050f542f336893fb8cd15f4e8e5c124dbf58e47"
         @test point.𝑦.𝑛 == want
         sec_bin = hex2bytes("049d5ca49670cbe4c3bfa84c96a8c87df086c6ea6a24ba6b809c9de234496808d56fa15cc7f3d38cda98dee2419f415b7513dde1301f8643cd9245aea7f3f911f9")
-        point = secp256k1.ec_parse(sec_bin)
+        point = secp256k1.Point(sec_bin)
         want = big"0x6fa15cc7f3d38cda98dee2419f415b7513dde1301f8643cd9245aea7f3f911f9"
         @test point.𝑦.𝑛 == want
     end

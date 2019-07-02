@@ -104,35 +104,12 @@ function serialize(P::Point; compressed::Bool=true)
 end
 
 """
-    parse(sec_bin::Vector{UInt8}) -> Point
+    Point(io::IOBuffer) -> Point
 
 Parse a SEC binary to an Point()
 """
-function ec_parse(sec_bin::Vector{UInt8})
-    if sec_bin[1] == 4
-        𝑥 = Int(sec_bin[2:33])
-        𝑦 = Int(sec_bin[34:65])
-        return Point(𝑥, 𝑦)
-    end
-    is_even = sec_bin[1] == 2
-    𝑥 = 𝐹(Int(sec_bin[2:end]))
-    α = 𝑥^3 + 𝐹(B)
-    β = sqrt(α)
-    if mod(β.𝑛, 2) == 0
-        evenβ = β
-        oddβ = 𝐹(P - β.𝑛)
-    else
-        evenβ = 𝐹(P - β.𝑛)
-        oddβ = β
-    end
-    if is_even
-        return Point(𝑥, evenβ)
-    else
-        return Point(𝑥, oddβ)
-    end
-end
 
-function sec2point(io::IOBuffer)
+function Point(io::IOBuffer)
     prefix = read(io, 1)[1]
     if prefix == 4
         𝑥 = Int(read(io, 32))
@@ -157,4 +134,4 @@ function sec2point(io::IOBuffer)
     end
 end
 
-Point(io::IOBuffer) = sec2point(io)
+Point(sec::Vector{UInt8}) = Point(IOBuffer(sec))
