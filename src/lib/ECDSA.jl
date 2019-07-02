@@ -1,25 +1,18 @@
 module ECDSA
 
 using BitConverter
-using secp256k1: Point, N, G
+using secp256k1: Point, KeyPair, N, G
 import Base.==
+export KeyPair
+
+KeyPair{:ECDSA}(𝑑) = 𝑑 ∉ 1:N-1 ? throw(NotInField()) : KeyPair{:ECDSA}(𝑑, 𝑑 * G)
 
 """
-KeyPair(𝑑) represents a Point 𝑃 determined by 𝑃 = 𝑑G,
-where 𝑑 is an integer and G the scep256k1 generator point.
-"""
-struct KeyPair
-    𝑑::Integer
-    𝑄::Point
-    KeyPair(𝑑) = 𝑑 ∉ 1:N-1 ? throw(NotInField()) : new(𝑑, 𝑑 * G)
-end
-
-"""
-    ECDSA.sign(kp::KeyPair, 𝑧::Integer) -> Signature
+    ECDSA.sign(kp::KeyPair{:ECDSA}, 𝑧::Integer) -> Signature
 
 Returns a Signature for a given `KeyPair` and data `𝑧`
 """
-function sign(kp::KeyPair, 𝑧::Integer)
+function sign(kp::KeyPair{:ECDSA}, 𝑧::Integer)
     𝑘 = rand(big.(0:N))
     𝑟 = (𝑘 * G).𝑥.𝑛
     𝑘⁻¹ = powermod(𝑘, N - 2, N)

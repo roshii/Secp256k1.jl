@@ -158,3 +158,12 @@ function sec2point(io::IOBuffer)
 end
 
 Point(io::IOBuffer) = sec2point(io)
+
+"""
+KeyPair(𝑑) represents a Point 𝑃 determined by 𝑃 = 𝑑G,
+where 𝑑 is an integer and G the scep256k1 generator point.
+"""
+struct KeyPair{T}
+    𝑑::Integer
+    𝑄::Point
+end

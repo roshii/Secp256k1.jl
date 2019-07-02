@@ -23,9 +23,9 @@
             end
         end
     end
-    
+
     @testset "Signature Verification" begin
-        kp = ECDSA.KeyPair(rand(big.(1:N-1)))
+        kp = KeyPair{:ECDSA}(rand(big.(1:N-1)))
         𝑧 = rand(Int)
         𝑠 = ECDSA.sign(kp, 𝑧)
         @test ECDSA.verify(kp.𝑄, 𝑧, 𝑠)

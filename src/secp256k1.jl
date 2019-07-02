@@ -4,7 +4,7 @@ module secp256k1
 
 using BitConverter
 import Base: +, -, *, ^, /, ==, inv, sqrt, show, div
-export ∞, ECDSA
+export ∞, KeyPair, ECDSA
 
 include("lib/errors.jl")
 include("lib/FieldElement.jl")
