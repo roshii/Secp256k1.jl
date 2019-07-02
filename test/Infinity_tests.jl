@@ -1,6 +1,6 @@
 @testset "Infinity Arithmetic" begin
-    posinf = secp256k1.Infinity(1)
-    neginf = secp256k1.Infinity(-1)
+    posinf = Secp256k1.Infinity(1)
+    neginf = Secp256k1.Infinity(-1)
     @testset "Equal" begin
         @test posinf != 3
         @test posinf != -7

@@ -1,7 +1,7 @@
 module ECDSA
 
 using BitConverter
-using secp256k1: Point, KeyPair, Signature, N, G
+using Secp256k1: Point, KeyPair, Signature, N, G
 export KeyPair
 
 KeyPair{:ECDSA}(𝑑) = 𝑑 ∉ 1:N-1 ? throw(NotInField()) : KeyPair{:ECDSA}(𝑑, 𝑑 * G)
