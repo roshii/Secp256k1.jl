@@ -2,10 +2,10 @@ __precompile__()
 
 module secp256k1
 
+using BitConverter
 import Base: +, -, *, ^, /, ==, inv, sqrt, show, div
-export ECDSA, ∞, int2bytes, bytes2int
+export ∞, ECDSA
 
-include("lib/helper.jl")
 include("lib/errors.jl")
 include("lib/FieldElement.jl")
 include("lib/Infinity.jl")

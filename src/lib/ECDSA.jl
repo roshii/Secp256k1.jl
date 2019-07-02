@@ -1,8 +1,8 @@
 module ECDSA
 
+using BitConverter
+using secp256k1: Point, N, G
 import Base.==
-import secp256k1: Point, N, G
-import secp256k1: bytes2int, int2bytes
 
 """
 KeyPair(𝑑) represents a Point 𝑃 determined by 𝑃 = 𝑑G,
@@ -67,25 +67,25 @@ end
 Serialize a Signature to DER format
 """
 function serialize(x::Signature)
-    rbin = int2bytes(x.𝑟)
+    rbin = bytes(x.𝑟)
     # if rbin has a high bit, add a 00
     if rbin[1] >= 128
         rbin = pushfirst!(rbin, 0x00)
     end
-    prepend!(rbin, int2bytes(length(rbin)))
+    prepend!(rbin, bytes(length(rbin)))
     pushfirst!(rbin, 0x02)
 
-    sbin = int2bytes(x.𝑠)
+    sbin = bytes(x.𝑠)
     # if sbin has a high bit, add a 00
     if sbin[1] >= 128
         sbin = pushfirst!(sbin, 0x00)
     end
-    prepend!(sbin, int2bytes(length(sbin)))
+    prepend!(sbin, bytes(length(sbin)))
     pushfirst!(sbin, 0x02)
 
     result = sbin
     prepend!(result, rbin)
-    prepend!(result, int2bytes(length(result)))
+    prepend!(result, bytes(length(result)))
     return pushfirst!(result, 0x30)
 end
 
@@ -109,13 +109,13 @@ function parse(x::Vector{UInt8})
         throw(PrefixError())
     end
     rlength = Int(read(io, 1)[1])
-    r = bytes2int(read(io, rlength))
+    r = Int(read(io, rlength))
     prefix = read(io, 1)[1]
     if prefix != 0x02
         throw(PrefixError())
     end
     slength = Int(read(io, 1)[1])
-    s = bytes2int(read(io, slength))
+    s = Int(read(io, slength))
     if length(x) != 6 + rlength + slength
         throw(LengthError())
     end

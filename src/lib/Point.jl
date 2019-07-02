@@ -82,7 +82,7 @@ end
 Serialize an Point() to its SEC format. `compressed=true` by default.
 """
 function serialize(P::Point; compressed::Bool=true)
-    xbin = int2bytes(P.𝑥.𝑛)
+    xbin = bytes(P.𝑥.𝑛)
     if length(xbin) < 32
         prepend!(xbin, UInt8.(zeros(32 - length(xbin))))
     end
@@ -95,7 +95,7 @@ function serialize(P::Point; compressed::Bool=true)
         return pushfirst!(xbin,prefix)
     else
         pushfirst!(xbin, 0x04)
-        ybin = int2bytes(P.𝑦.𝑛)
+        ybin = bytes(P.𝑦.𝑛)
         if length(ybin) < 32
             prepend!(ybin, UInt8.(zeros(32 - length(ybin))))
         end
@@ -110,12 +110,12 @@ Parse a SEC binary to an Point()
 """
 function ec_parse(sec_bin::Vector{UInt8})
     if sec_bin[1] == 4
-        𝑥 = bytes2int(sec_bin[2:33])
-        𝑦 = bytes2int(sec_bin[34:65])
+        𝑥 = Int(sec_bin[2:33])
+        𝑦 = Int(sec_bin[34:65])
         return Point(𝑥, 𝑦)
     end
     is_even = sec_bin[1] == 2
-    𝑥 = 𝐹(bytes2int(sec_bin[2:end]))
+    𝑥 = 𝐹(Int(sec_bin[2:end]))
     α = 𝑥^3 + 𝐹(B)
     β = sqrt(α)
     if mod(β.𝑛, 2) == 0
@@ -135,12 +135,12 @@ end
 function sec2point(io::IOBuffer)
     prefix = read(io, 1)[1]
     if prefix == 4
-        𝑥 = bytes2int(read(io, 32))
-        𝑦 = bytes2int(read(io, 32))
+        𝑥 = Int(read(io, 32))
+        𝑦 = Int(read(io, 32))
         return Point(𝑥, 𝑦)
     end
     is_even = prefix == 2
-    𝑥 = 𝐹(bytes2int(read(io, 32)))
+    𝑥 = 𝐹(Int(read(io, 32)))
     α = 𝑥^3 + 𝐹(B)
     β = sqrt(α)
     if mod(β.𝑛, 2) == 0

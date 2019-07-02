@@ -21,13 +21,6 @@ secp256k1.ECDSA.serialize
 secp256k1.ECDSA.parse
 ```
 
-## Helpers
-
-```@docs
-int2bytes
-bytes2int
-```
-
 ## Buy me a cup of coffee
 
 [Donate Bitcoin](bitcoin:34nvxratCQcQgtbwxMJfkmmxwrxtShTn67)

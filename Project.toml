@@ -7,6 +7,9 @@ description = "EC operations on curve secp256k1"
 repository = "https://gitlab.com/braneproject/secp256k1.jl.git"
 version = "0.1.0"
 
+[deps]
+BitConverter = "3a3ce9e8-98e7-11e9-0fa0-055639f146d3"
+
 [compat]
 julia = "1"
 
