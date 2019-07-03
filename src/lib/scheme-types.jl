@@ -79,14 +79,14 @@ function Signature(x::Vector{UInt8}; scheme::Symbol=:ECDSA)
     if prefix != 0x02
         throw(PrefixError())
     end
-    rlength = Int(read(io, 1)[1])
-    r = Int(read(io, rlength))
+    rlength = read(io, 1)[1]
+    r = to_int(read(io, rlength))
     prefix = read(io, 1)[1]
     if prefix != 0x02
         throw(PrefixError())
     end
-    slength = Int(read(io, 1)[1])
-    s = Int(read(io, slength))
+    slength = read(io, 1)[1]
+    s = to_int(read(io, slength))
     if length(x) != 6 + rlength + slength
         throw(LengthError())
     end
