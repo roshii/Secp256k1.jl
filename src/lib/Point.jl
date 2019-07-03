@@ -112,12 +112,12 @@ Parse a SEC binary to an `Point`
 function Point(io::IOBuffer)
     prefix = read(io, 1)[1]
     if prefix == 4
-        𝑥 = Int(read(io, 32))
-        𝑦 = Int(read(io, 32))
+        𝑥 = to_int(read(io, 32))
+        𝑦 = to_int(read(io, 32))
         return Point(𝑥, 𝑦)
     end
     is_even = prefix == 2
-    𝑥 = 𝐹(Int(read(io, 32)))
+    𝑥 = 𝐹(to_int(read(io, 32)))
     α = 𝑥^3 + 𝐹(B)
     β = sqrt(α)
     if mod(β.𝑛, 2) == 0
