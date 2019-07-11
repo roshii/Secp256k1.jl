@@ -6,7 +6,7 @@ Julia library for EC operations on curve secp256k1.
 
 ## Documentation
 
-https://braneproject.gitlab.io/secp256k1.jl
+https://braneproject.gitlab.io/Secp256k1.jl
 
 ## Buy me a cup of coffee
 
